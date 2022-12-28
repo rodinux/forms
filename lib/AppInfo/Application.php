@@ -30,6 +30,9 @@ namespace OCA\Forms\AppInfo;
 
 use OCA\Forms\Capabilities;
 use OCA\Forms\FormsMigrator;
+use OCA\Forms\Listener\LoadSettingsScriptListener;
+use OCA\Forms\Listener\RegisterChecksListener;
+use OCA\Forms\Listener\RegisterEntitiesListener;
 use OCA\Forms\Listener\UserDeletedListener;
 use OCA\Forms\Middleware\PublicCorsMiddleware;
 use OCP\AppFramework\App;
@@ -37,6 +40,9 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\User\Events\UserDeletedEvent;
+use OCP\WorkflowEngine\Events\LoadSettingsScriptsEvent;
+use OCP\WorkflowEngine\Events\RegisterChecksEvent;
+use OCP\WorkflowEngine\Events\RegisterEntitiesEvent;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'forms';
@@ -59,6 +65,9 @@ class Application extends App implements IBootstrap {
 
 		$context->registerCapability(Capabilities::class);
 		$context->registerEventListener(UserDeletedEvent::class, UserDeletedListener::class);
+		$context->registerEventListener(RegisterChecksEvent::class, RegisterChecksListener::class);
+		$context->registerEventListener(RegisterEntitiesEvent::class, RegisterEntitiesListener::class);
+		$context->registerEventListener(LoadSettingsScriptsEvent::class, LoadSettingsScriptListener::class);
 		$context->registerUserMigrator(FormsMigrator::class);
 		$context->registerMiddleware(PublicCorsMiddleware::class);
 	}
