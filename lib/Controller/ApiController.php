@@ -40,6 +40,9 @@ use OCA\Forms\Db\QuestionMapper;
 use OCA\Forms\Db\ShareMapper;
 use OCA\Forms\Db\Submission;
 use OCA\Forms\Db\SubmissionMapper;
+use OCA\Forms\Events\FormCreatedEvent;
+use OCA\Forms\Events\FormDeletedEvent;
+use OCA\Forms\Events\FormUpdatedEvent;
 use OCA\Forms\Service\ConfigService;
 use OCA\Forms\Service\FormsService;
 use OCA\Forms\Service\SubmissionService;
@@ -52,6 +55,7 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSBadRequestException;
 use OCP\AppFramework\OCS\OCSException;
 use OCP\AppFramework\OCS\OCSForbiddenException;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Files\NotPermittedException;
 use OCP\IL10N;
 use OCP\IRequest;
@@ -106,6 +110,9 @@ class ApiController extends OCSController {
 	/** @var IUserManager */
 	private $userManager;
 
+	/** @var IEventDispatcher */
+	private $eventDispatcher;
+
 	public function __construct(string $appName,
 								ActivityManager $activityManager,
 								AnswerMapper $answerMapper,
@@ -121,7 +128,8 @@ class ApiController extends OCSController {
 								LoggerInterface $logger,
 								IRequest $request,
 								IUserManager $userManager,
-								IUserSession $userSession) {
+								IUserSession $userSession,
+								IEventDispatcher $eventDispatcher) {
 		parent::__construct($appName, $request);
 		$this->appName = $appName;
 		$this->activityManager = $activityManager;
@@ -138,6 +146,7 @@ class ApiController extends OCSController {
 		$this->l10n = $l10n;
 		$this->logger = $logger;
 		$this->userManager = $userManager;
+		$this->eventDispatcher = $eventDispatcher;
 
 		$this->currentUser = $userSession->getUser();
 	}
@@ -272,6 +281,8 @@ class ApiController extends OCSController {
 
 		$this->formMapper->insert($form);
 
+		$this->eventDispatcher->dispatchTyped(new FormCreatedEvent($form));
+
 		// Return like getForm()
 		return $this->getForm($form->getId());
 	}
@@ -344,6 +355,8 @@ class ApiController extends OCSController {
 			}
 		}
 
+		$this->eventDispatcher->dispatchTyped(new FormCreatedEvent($newForm));
+
 		// Return just like getForm does. Returns the full form.
 		return $this->getForm($newForm->getId());
 	}
@@ -398,6 +411,8 @@ class ApiController extends OCSController {
 		// Update changed Columns in Db.
 		$this->formMapper->update($form);
 
+		$this->eventDispatcher->dispatchTyped(new FormUpdatedEvent($form));
+
 		return new DataResponse($form->getId());
 	}
 
@@ -430,6 +445,8 @@ class ApiController extends OCSController {
 		}
 
 		$this->formMapper->deleteForm($form);
+
+		$this->eventDispatcher->dispatchTyped(new FormDeletedEvent($form));
 
 		return new DataResponse($id);
 	}
@@ -500,6 +517,8 @@ class ApiController extends OCSController {
 
 		$response = $question->read();
 		$response['options'] = [];
+
+		$this->eventDispatcher->dispatchTyped(new FormUpdatedEvent($form));
 
 		return new DataResponse($response);
 	}
@@ -653,6 +672,8 @@ class ApiController extends OCSController {
 
 		// Update changed Columns in Db.
 		$this->questionMapper->update($question);
+	
+		$this->eventDispatcher->dispatchTyped(new FormUpdatedEvent($form));
 
 		return new DataResponse($question->getId());
 	}
@@ -703,6 +724,8 @@ class ApiController extends OCSController {
 			}
 		}
 
+		$this->eventDispatcher->dispatchTyped(new FormUpdatedEvent($form));
+
 		return new DataResponse($id);
 	}
 
@@ -743,6 +766,8 @@ class ApiController extends OCSController {
 		$option->setText($text);
 
 		$option = $this->optionMapper->insert($option);
+	
+		$this->eventDispatcher->dispatchTyped(new FormUpdatedEvent($form));
 
 		return new DataResponse($option->read());
 	}
@@ -798,6 +823,8 @@ class ApiController extends OCSController {
 		// Update changed Columns in Db.
 		$this->optionMapper->update($option);
 
+		$this->eventDispatcher->dispatchTyped(new FormUpdatedEvent($form));
+
 		return new DataResponse($option->getId());
 	}
 
@@ -832,6 +859,8 @@ class ApiController extends OCSController {
 		}
 
 		$this->optionMapper->delete($option);
+
+		$this->eventDispatcher->dispatchTyped(new FormUpdatedEvent($form));
 
 		return new DataResponse($id);
 	}
