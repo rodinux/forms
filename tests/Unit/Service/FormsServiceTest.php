@@ -48,7 +48,7 @@ use OCP\Security\ISecureRandom;
 use OCP\Share\IShare;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use Test\TestCase;
+use PHPUnit\Framework\TestCase;
 
 use Psr\Log\LoggerInterface;
 

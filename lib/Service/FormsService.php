@@ -257,21 +257,28 @@ class FormsService {
 	}
 
 	/**
-	 * Get current users permissions on a form
+	 * Get users permissions on a form
 	 *
 	 * @param integer $formId
+	 * @param string $userId If not set the current user is used
 	 * @return array
 	 */
-	public function getPermissions(int $formId): array {
+	public function getPermissions(int $formId, string $userId = null): array {
 		$form = $this->formMapper->findById($formId);
+		if (is_null($userId)) {
+			if (!$this->currentUser) {
+				return false;
+			}
+			$userId = $this->currentUser->getUID();
+		}
 
 		// Owner is allowed to do everything
-		if ($this->currentUser && $this->currentUser->getUID() === $form->getOwnerId()) {
+		if ($userId === $form->getOwnerId()) {
 			return Constants::PERMISSION_ALL;
 		}
 
 		$permissions = [];
-		$shares = $this->getSharesWithUser($formId, $this->currentUser->getUID());
+		$shares = $this->getSharesWithUser($formId, $userId);
 		foreach ($shares as $share) {
 			$permissions = array_merge($permissions, $share->getPermissions());
 		}
@@ -354,23 +361,27 @@ class FormsService {
 	}
 
 	/**
-	 * Check if current user has access to this form
+	 * Check if an user has access to this form
 	 *
 	 * @param integer $formId
+	 * @param string $userId If not set current user is used
 	 * @return boolean
 	 */
-	public function hasUserAccess(int $formId): bool {
+	public function hasUserAccess(int $formId, string $userId = null): bool {
 		$form = $this->formMapper->findById($formId);
 		$access = $form->getAccess();
 		$ownerId = $form->getOwnerId();
 
-		// Refuse access, if no user logged in.
-		if (!$this->currentUser) {
-			return false;
+		if (is_null($userId)) {
+			// Refuse access, if no user logged in.
+			if (!$this->currentUser) {
+				return false;
+			}
+			$userId = $this->currentUser->getUID();
 		}
 
 		// Always grant access to owner.
-		if ($ownerId === $this->currentUser->getUID()) {
+		if ($ownerId === $userId) {
 			return true;
 		}
 
@@ -380,7 +391,7 @@ class FormsService {
 		}
 
 		// Selected Access remains.
-		if ($this->isSharedToUser($formId)) {
+		if ($this->isSharedToUser($formId, $userId)) {
 			return true;
 		}
 
@@ -430,8 +441,15 @@ class FormsService {
 	 * @param int $formId
 	 * @return bool
 	 */
-	public function isSharedToUser(int $formId): bool {
-		$shareEntities = $this->getSharesWithUser($formId, $this->currentUser->getUID());
+	public function isSharedToUser(int $formId, string $userId = null): bool {
+		if (is_null($userId)) {
+			if (!$this->currentUser) {
+				return false;
+			}
+			$userId = $this->currentUser->getUID();
+		}
+
+		$shareEntities = $this->getSharesWithUser($formId, $userId);
 		return count($shareEntities) > 0;
 	}
 
