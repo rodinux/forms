@@ -133,15 +133,17 @@
 import { generateOcsUrl } from '@nextcloud/router'
 import { getRequestToken } from '@nextcloud/auth'
 import { getFilePickerBuilder, showError, showSuccess } from '@nextcloud/dialogs'
-import NcActions from '@nextcloud/vue/dist/Components/NcActions.js'
-import NcActionButton from '@nextcloud/vue/dist/Components/NcActionButton.js'
-import NcAppContent from '@nextcloud/vue/dist/Components/NcAppContent.js'
-import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
-import NcEmptyContent from '@nextcloud/vue/dist/Components/NcEmptyContent.js'
-import NcLoadingIcon from '@nextcloud/vue/dist/Components/NcLoadingIcon.js'
+import {
+	NcActions,
+	NcActionButton,
+	NcAppContent,
+	NcButton,
+	NcEmptyContent,
+	NcLoadingIcon,
+} from '@nextcloud/vue'
+
 import axios from '@nextcloud/axios'
 import moment from '@nextcloud/moment'
-
 import IconDelete from 'vue-material-design-icons/Delete.vue'
 import IconDownload from 'vue-material-design-icons/Download.vue'
 import IconFolder from 'vue-material-design-icons/Folder.vue'

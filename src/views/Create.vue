@@ -129,17 +129,19 @@ import { directive as ClickOutside } from 'v-click-outside'
 import { generateOcsUrl } from '@nextcloud/router'
 import { loadState } from '@nextcloud/initial-state'
 import { showError } from '@nextcloud/dialogs'
+import {
+	NcActionButton,
+	NcActions,
+	NcAppContent,
+	NcEmptyContent,
+	NcLoadingIcon,
+	NcRichContenteditable,
+} from '@nextcloud/vue'
+
 import axios from '@nextcloud/axios'
 import moment from '@nextcloud/moment'
 import debounce from 'debounce'
 import Draggable from 'vuedraggable'
-
-import NcActionButton from '@nextcloud/vue/dist/Components/NcActionButton.js'
-import NcActions from '@nextcloud/vue/dist/Components/NcActions.js'
-import NcAppContent from '@nextcloud/vue/dist/Components/NcAppContent.js'
-import NcEmptyContent from '@nextcloud/vue/dist/Components/NcEmptyContent.js'
-import NcLoadingIcon from '@nextcloud/vue/dist/Components/NcLoadingIcon.js'
-import NcRichContenteditable from '@nextcloud/vue/dist/Components/NcRichContenteditable.js'
 import IconPlus from 'vue-material-design-icons/Plus.vue'
 
 import answerTypes from '../models/AnswerTypes.js'

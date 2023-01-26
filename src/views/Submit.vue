@@ -105,11 +105,14 @@
 import { loadState } from '@nextcloud/initial-state'
 import { generateOcsUrl } from '@nextcloud/router'
 import { showError } from '@nextcloud/dialogs'
+import {
+	NcAppContent,
+	NcEmptyContent,
+	NcLoadingIcon
+} from '@nextcloud/vue'
+
 import axios from '@nextcloud/axios'
 import moment from '@nextcloud/moment'
-import NcAppContent from '@nextcloud/vue/dist/Components/NcAppContent.js'
-import NcEmptyContent from '@nextcloud/vue/dist/Components/NcEmptyContent.js'
-import NcLoadingIcon from '@nextcloud/vue/dist/Components/NcLoadingIcon.js'
 import IconCheck from 'vue-material-design-icons/Check.vue'
 
 import answerTypes from '../models/AnswerTypes.js'

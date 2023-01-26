@@ -94,11 +94,12 @@
 
 <script>
 import { directive as ClickOutside } from 'v-click-outside'
-
-import NcActions from '@nextcloud/vue/dist/Components/NcActions.js'
-import NcActionButton from '@nextcloud/vue/dist/Components/NcActionButton.js'
-import NcActionCheckbox from '@nextcloud/vue/dist/Components/NcActionCheckbox.js'
-import NcRichContenteditable from '@nextcloud/vue/dist/Components/NcRichContenteditable.js'
+import {
+	NcActions,
+	NcActionButton,
+	NcActionCheckbox,
+	NcRichContenteditable,
+} from '@nextcloud/vue'
 
 import IconAlertCircleOutline from 'vue-material-design-icons/AlertCircleOutline.vue'
 import IconDelete from 'vue-material-design-icons/Delete.vue'

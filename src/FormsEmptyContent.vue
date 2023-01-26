@@ -33,8 +33,11 @@
 
 <script>
 import { loadState } from '@nextcloud/initial-state'
-import NcContent from '@nextcloud/vue/dist/Components/NcContent.js'
-import NcEmptyContent from '@nextcloud/vue/dist/Components/NcEmptyContent.js'
+import {
+	NcContent,
+	NcEmptyContent,
+} from '@nextcloud/vue'
+
 import IconCheck from 'vue-material-design-icons/Check.vue'
 import FormsIcon from './components/Icons/FormsIcon.vue'
 

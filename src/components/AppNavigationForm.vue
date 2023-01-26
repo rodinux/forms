@@ -85,11 +85,14 @@
 <script>
 import { generateOcsUrl } from '@nextcloud/router'
 import { showError } from '@nextcloud/dialogs'
-import NcActionButton from '@nextcloud/vue/dist/Components/NcActionButton.js'
-import NcActionRouter from '@nextcloud/vue/dist/Components/NcActionRouter.js'
-import NcActionSeparator from '@nextcloud/vue/dist/Components/NcActionSeparator.js'
-import NcListItem from '@nextcloud/vue/dist/Components/NcListItem.js'
-import NcLoadingIcon from '@nextcloud/vue/dist/Components/NcLoadingIcon.js'
+import {
+	NcActionButton,
+	NcActionRouter,
+	NcActionSeparator,
+	NcListItem,
+	NcLoadingIcon,
+} from '@nextcloud/vue'
+
 import axios from '@nextcloud/axios'
 import moment from '@nextcloud/moment'
 import IconCheck from 'vue-material-design-icons/Check.vue'

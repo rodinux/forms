@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
+import { NcButton } from '@nextcloud/vue'
 import isMobile from '@nextcloud/vue/dist/Mixins/isMobile.js'
 import IconEye from 'vue-material-design-icons/Eye.vue'
 import IconMenuOpen from 'vue-material-design-icons/MenuOpen.vue'

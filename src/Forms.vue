@@ -107,18 +107,19 @@ import { emit } from '@nextcloud/event-bus'
 import { generateOcsUrl } from '@nextcloud/router'
 import { loadState } from '@nextcloud/initial-state'
 import { showError } from '@nextcloud/dialogs'
+import {
+	NcAppContent,
+	NcAppNavigation,
+	NcAppNavigationCaption,
+	NcAppNavigationNew,
+	NcButton,
+	NcContent,
+	NcEmptyContent,
+	NcLoadingIcon,
+	isMobile,
+} from '@nextcloud/vue'
+
 import axios from '@nextcloud/axios'
-
-import NcAppContent from '@nextcloud/vue/dist/Components/NcAppContent.js'
-import NcAppNavigation from '@nextcloud/vue/dist/Components/NcAppNavigation.js'
-import NcAppNavigationCaption from '@nextcloud/vue/dist/Components/NcAppNavigationCaption.js'
-import NcAppNavigationNew from '@nextcloud/vue/dist/Components/NcAppNavigationNew.js'
-import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
-import NcContent from '@nextcloud/vue/dist/Components/NcContent.js'
-import NcEmptyContent from '@nextcloud/vue/dist/Components/NcEmptyContent.js'
-import NcLoadingIcon from '@nextcloud/vue/dist/Components/NcLoadingIcon.js'
-import isMobile from '@nextcloud/vue/dist/Mixins/isMobile.js'
-
 import IconPlus from 'vue-material-design-icons/Plus.vue'
 
 import FormsIcon from './components/Icons/FormsIcon.vue'

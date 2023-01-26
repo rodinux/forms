@@ -162,10 +162,13 @@
 import { generateOcsUrl } from '@nextcloud/router'
 import { loadState } from '@nextcloud/initial-state'
 import { showError } from '@nextcloud/dialogs'
+import {
+	NcActions,
+	NcActionButton,
+	NcCheckboxRadioSwitch,
+} from '@nextcloud/vue'
+
 import axios from '@nextcloud/axios'
-import NcActions from '@nextcloud/vue/dist/Components/NcActions.js'
-import NcActionButton from '@nextcloud/vue/dist/Components/NcActionButton.js'
-import NcCheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
 import IconAccountMultiple from 'vue-material-design-icons/AccountMultiple.vue'
 import IconAlertCircleOutline from 'vue-material-design-icons/AlertCircleOutline.vue'
 import IconDelete from 'vue-material-design-icons/Delete.vue'

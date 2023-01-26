@@ -63,9 +63,12 @@
 </template>
 
 <script>
+import {
+	NcCheckboxRadioSwitch,
+	NcDatetimePicker,
+} from '@nextcloud/vue'
+
 import moment from '@nextcloud/moment'
-import NcCheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
-import NcDatetimePicker from '@nextcloud/vue/dist/Components/NcDatetimePicker.js'
 import ShareTypes from '../../mixins/ShareTypes.js'
 
 export default {

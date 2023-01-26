@@ -92,9 +92,12 @@
 <script>
 import { generateOcsUrl } from '@nextcloud/router'
 import { showError } from '@nextcloud/dialogs'
+import {
+	NcActionCheckbox,
+	NcCheckboxRadioSwitch,
+} from '@nextcloud/vue'
+
 import axios from '@nextcloud/axios'
-import NcActionCheckbox from '@nextcloud/vue/dist/Components/NcActionCheckbox.js'
-import NcCheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
 import IconCheckboxBlankOutline from 'vue-material-design-icons/CheckboxBlankOutline.vue'
 import IconRadioboxBlank from 'vue-material-design-icons/RadioboxBlank.vue'
 

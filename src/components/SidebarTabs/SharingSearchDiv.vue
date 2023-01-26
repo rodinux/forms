@@ -50,8 +50,9 @@
 <script>
 import { generateOcsUrl } from '@nextcloud/router'
 import { getCurrentUser } from '@nextcloud/auth'
+import { NcMultiselect } from '@nextcloud/vue'
+
 import axios from '@nextcloud/axios'
-import NcMultiselect from '@nextcloud/vue/dist/Components/NcMultiselect.js'
 import debounce from 'debounce'
 
 import OcsResponse2Data from '../../utils/OcsResponse2Data.js'
