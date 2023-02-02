@@ -33,6 +33,7 @@ use OCA\Forms\Db\OptionMapper;
 use OCA\Forms\Db\QuestionMapper;
 use OCA\Forms\Db\ShareMapper;
 use OCA\Forms\Db\SubmissionMapper;
+use OCA\Forms\Events\FormCreatedEvent;
 use OCA\Forms\Service\ConfigService;
 use OCA\Forms\Service\FormsService;
 use OCA\Forms\Service\SubmissionService;
@@ -40,6 +41,7 @@ use OCP\AppFramework\Http\DataDownloadResponse;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSBadRequestException;
 use OCP\AppFramework\OCS\OCSForbiddenException;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IUser;
@@ -79,6 +81,8 @@ class ApiControllerTest extends TestCase {
 	private $request;
 	/** @var IUserManager|MockObject */
 	private $userManager;
+	/** @var IEventDispatcher|MockObject */
+	private $eventDispatcher;
 	/** @var IL10N|MockObject */
 	private $l10n;
 
@@ -96,6 +100,7 @@ class ApiControllerTest extends TestCase {
 		$this->logger = $this->createMock(LoggerInterface::class);
 		$this->request = $this->createMock(IRequest::class);
 		$this->userManager = $this->createMock(IUserManager::class);
+		$this->eventDispatcher = $this->createMock(IEventDispatcher::class);
 		$this->l10n = $this->createMock(IL10N::class);
 		$this->l10n->expects($this->any())
 			->method('t')
@@ -119,7 +124,8 @@ class ApiControllerTest extends TestCase {
 			$this->logger,
 			$this->request,
 			$this->userManager,
-			$this->createUserSession()
+			$this->createUserSession(),
+			$this->eventDispatcher
 		);
 	}
 
@@ -355,7 +361,8 @@ class ApiControllerTest extends TestCase {
 			 	$this->logger,
 			 	$this->request,
 			 	$this->userManager,
-			 	$this->createUserSession()
+			 	$this->createUserSession(),
+			 	$this->eventDispatcher
 			 ])->getMock();
 
 		$this->configService->expects($this->once())
@@ -373,6 +380,12 @@ class ApiControllerTest extends TestCase {
 				$form->setId(7);
 				return $form;
 			});
+		$this->eventDispatcher->expects($this->once())
+			->method('dispatchTyped')
+			->with(self::callback(fn ($event): bool =>
+				$event instanceof FormCreatedEvent &&
+				$validateForm($expectedForm)($event->getForm())
+			));
 		$apiController->expects($this->once())
 			->method('getForm')
 			->with(7)
