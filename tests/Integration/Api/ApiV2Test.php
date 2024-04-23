@@ -864,7 +864,8 @@ class ApiV2Test extends IntegrationBase {
 			'newOption' => [
 				'expected' => [
 					// 'questionId' => Done dynamically below.
-					'text' => 'A new Option.'
+					'text' => 'A new Option.',
+					'order' => null,
 				]
 			]
 		];
@@ -933,6 +934,10 @@ class ApiV2Test extends IntegrationBase {
 	public function dataDeleteOption() {
 		$fullFormExpected = $this->dataGetFullForm()['getFullForm']['expected'];
 		array_splice($fullFormExpected['questions'][1]['options'], 0, 1);
+
+		// Now the other options are reordered
+		$fullFormExpected['questions'][1]['options'][0]['order'] = 0;
+		$fullFormExpected['questions'][1]['options'][1]['order'] = 1;
 
 		return [
 			'deleteOption' => [
