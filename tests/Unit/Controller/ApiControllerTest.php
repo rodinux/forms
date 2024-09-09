@@ -472,8 +472,6 @@ class ApiControllerTest extends TestCase {
 				$this->uploadedFileMapper,
 				$this->mimeTypeDetector,
 			])->getMock();
-		// Set the time that should be set for `lastUpdated`
-		\OCA\Forms\Controller\time(123456789);
 
 		$this->configService->expects($this->once())
 			->method('canCreateForms')
@@ -483,11 +481,15 @@ class ApiControllerTest extends TestCase {
 			->willReturn('formHash');
 		$expected = $expectedForm;
 		$expected['id'] = null;
+		$expected['state'] = null;
+		$expected['lastUpdated'] = null;
 		$this->formMapper->expects($this->once())
 			->method('insert')
 			->with(self::callback(self::createFormValidator($expected)))
 			->willReturnCallback(function ($form) {
 				$form->setId(7);
+				$form->setState(0);
+				$form->setLastUpdated(123456789);
 				return $form;
 			});
 		$apiController->expects($this->once())
@@ -842,10 +844,6 @@ class ApiControllerTest extends TestCase {
 			}));
 
 		$this->formsService->expects($this->once())
-			->method('setLastUpdatedTimestamp')
-			->with(1);
-
-		$this->formsService->expects($this->once())
 			->method('notifyNewSubmission');
 
 		$this->formsService->expects($this->once())
@@ -1019,11 +1017,6 @@ class ApiControllerTest extends TestCase {
 			->expects($this->once())
 			->method('deleteById')
 			->with(42);
-
-		$this->formsService
-			->expects($this->once())
-			->method('setLastUpdatedTimestamp')
-			->with($formData['id']);
 
 		$this->assertEquals(new DataResponse(42), $this->apiController->deleteSubmission(1, 42));
 	}
