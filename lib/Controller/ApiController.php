@@ -915,6 +915,90 @@ class ApiController extends OCSController {
 		return new DataResponse($optionId);
 	}
 
+	/**
+	 * Reorder options for a given question
+	 * @param int $formId id of form
+	 * @param int $questionId id of question
+	 * @param Array<int, int> $newOrder Order to use
+	 */
+	public function reorderOptions(int $formId, int $questionId, array $newOrder) {
+		$form = $this->getFormIfAllowed($formId);
+		if ($this->formsService->isFormArchived($form)) {
+			$this->logger->debug('This form is archived and can not be modified');
+			throw new OCSForbiddenException();
+		}
+
+		try {
+			$question = $this->questionMapper->findById($questionId);
+		} catch (IMapperException $e) {
+			$this->logger->debug('Could not find form or question', ['exception' => $e]);
+			throw new OCSNotFoundException('Could not find form or question');
+		}
+
+		if ($question->getFormId() !== $formId) {
+			$this->logger->debug('The given question id doesn\'t match the form.');
+			throw new OCSBadRequestException();
+		}
+
+		// Check if array contains duplicates
+		if (array_unique($newOrder) !== $newOrder) {
+			$this->logger->debug('The given array contains duplicates');
+			throw new OCSBadRequestException('The given array contains duplicates');
+		}
+		
+		$options = $this->optionMapper->findByQuestion($questionId);
+		
+		if (sizeof($options) !== sizeof($newOrder)) {
+			$this->logger->debug('The length of the given array does not match the number of stored options');
+			throw new OCSBadRequestException('The length of the given array does not match the number of stored options');
+		}
+		
+		$options = []; // Clear Array of Entities
+		$response = []; // Array of ['optionId' => ['order' => newOrder]]
+
+		// Store array of Option entities and check the Options questionId & old order.
+		foreach ($newOrder as $arrayKey => $optionId) {
+			try {
+				$options[$arrayKey] = $this->optionMapper->findById($optionId);
+			} catch (IMapperException $e) {
+				$this->logger->debug('Could not find option. Id: {optionId}', [
+					'optionId' => $optionId
+				]);
+				throw new OCSBadRequestException();
+			}
+
+			// Abort if a question is not part of the Form.
+			if ($options[$arrayKey]->getQuestionId() !== $questionId) {
+				$this->logger->debug('This Option is not part of the given Question: formId: {formId}', [
+					'formId' => $formId
+				]);
+				throw new OCSBadRequestException();
+			}
+
+			// Abort if a question is already marked as deleted (order==0)
+			$oldOrder = $options[$arrayKey]->getOrder();
+
+			// Only set order, if it changed.
+			if ($oldOrder !== $arrayKey + 1) {
+				// Set Order. ArrayKey counts from zero, order counts from 1.
+				$options[$arrayKey]->setOrder($arrayKey + 1);
+			}
+		}
+
+		// Write to Database
+		foreach ($options as $option) {
+			$this->optionMapper->update($option);
+
+			$response[$option->getId()] = [
+				'order' => $option->getOrder()
+			];
+		}
+
+		$this->formsService->setLastUpdatedTimestamp($formId);
+	
+		return new DataResponse([]);
+	}
+
 	// Submissions
 
 	/**
@@ -1967,7 +2051,7 @@ class ApiController extends OCSController {
 	 * @throws OCSBadRequestException
 	 * @throws OCSForbiddenException
 	 */
-	public function newOptionLegacy(int $questionId, string $text, int|null $order = null): DataResponse {
+	public function newOptionLegacy(int $questionId, string $text, ?int $order = null): DataResponse {
 		$this->logger->debug('Adding new option: questionId: {questionId}, text: {text}', [
 			'questionId' => $questionId,
 			'text' => $text,
@@ -2114,47 +2198,6 @@ class ApiController extends OCSController {
 		$this->formsService->setLastUpdatedTimestamp($form->getId());
 
 		return new DataResponse($id);
-	}
-
-	/**
-	 * Reorder options for a given question
-	 * @param int $id The question ID
-	 * @param int[] $order Order to use
-	 */
-	public function reorderOptions(int $id, array $order) {
-		try {
-			/** @var int[] */
-			$order = array_flip(array_values($order));
-		} catch (\Error $e) {
-			throw new OCSBadRequestException('Invalid order parameter');
-		}
-
-		try {
-			$question = $this->questionMapper->findById($id);
-			$form = $this->formMapper->findById($question->getFormId());
-		} catch (IMapperException $e) {
-			$this->logger->debug('Could not find form or question', ['exception' => $e]);
-			throw new OCSNotFoundException('Could not find question');
-		}
-
-		if ($form->getOwnerId() !== $this->currentUser->getUID()) {
-			$this->logger->debug('This form is not owned by the current user');
-			throw new OCSForbiddenException();
-		}
-
-		if ($this->formsService->isFormArchived($form)) {
-			$this->logger->debug('This form is archived and can not be modified');
-			throw new OCSForbiddenException();
-		}
-
-		$options = $this->optionMapper->findByQuestion($id);
-
-		foreach ($options as $option) {
-			$option->setOrder($order[$option->getId()] ?? 0);
-			$this->optionMapper->update($option);
-		}
-
-		return new DataResponse([]);
 	}
 
 	/**

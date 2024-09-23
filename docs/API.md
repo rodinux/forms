@@ -41,6 +41,8 @@ This file contains the API-Documentation. For more information on the returned D
 
 -   In API version 2.5 the following endpoints were introduced:
     -   `POST /api/2.5/uploadFiles/{formId}/{questionId}` to upload files to answer before form submitting
+-   In API version 2.5 the following change was made:
+    -   Options now contain a property `order`
 -   In API version 2.4 the following endpoints were introduced:
     -   `POST /api/2.4/form/link/{fileFormat}` to link form to a file
     -   `POST /api/2.4/form/unlink` to unlink form from a file
@@ -196,12 +198,14 @@ Returns the full-depth object of the requested form (without submissions).
         {
           "id": 1,
           "questionId": 1,
-          "text": "Option 1"
+          "text": "Option 1",
+          "order": null
         },
         {
           "id": 2,
           "questionId": 1,
-          "text": "Option 2"
+          "text": "Option 2",
+          "order": null
         }
       ],
       "accept": [],
@@ -489,18 +493,6 @@ Update a single or all properties of an option-object
 ```
 "data": 7
 ```
-### Reorder options
-- Endpoint: `/api/v2.5/question/{id}/options`
-- Url-Parameter:
-  | Parameter | Type    | Description |
-  |-----------|---------|-------------|
-  | _id_      | Integer | ID of the question to reorder options for |
-- Parameters:
-  | Parameter | Type    | Description |
-  |-----------|---------|-------------|
-  | _order_   | Array   | Ordered array of option IDs, the options will be reordered according to their position in this array |
-- Method: `PATCH`
-- Response: **Status-Code OK**.
 
 ### Delete an option
 
@@ -647,17 +639,20 @@ Get all Submissions to a Form
         {
           "id": 1,
           "questionId": 1,
-          "text": "Option 1"
+          "text": "Option 1",
+          "order": null
         },
         {
           "id": 27,
           "questionId": 1,
-          "text": "Option 2"
+          "text": "Option 2",
+          "order": null
         },
         {
           "id": 30,
           "questionId": 1,
-          "text": "Option 3"
+          "text": "Option 3",
+          "order": null
         }
       ],
       "extraSettings": {}

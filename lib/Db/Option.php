@@ -40,8 +40,8 @@ class Option extends Entity {
 
 	// For 32bit PHP long integers, like IDs, are represented by floats
 	protected int|float|null $questionId;
-	protected string|null $text;
-	protected int|null $order;
+	protected ?string $text;
+	protected ?int $order;
 
 	/**
 	 * Option constructor.
