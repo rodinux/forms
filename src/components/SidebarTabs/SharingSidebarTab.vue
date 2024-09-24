@@ -175,7 +175,7 @@
 		</div>
 
 		<!-- All users on Instance -->
-		<div v-if="appConfig.allowPermitAll">
+<!-- hidden 		<div v-if="appConfig.allowPermitAll">
 			<div class="share-div">
 				<div class="share-div__avatar">
 					<IconAccountMultiple :size="20" />
@@ -205,7 +205,7 @@
 					@update:checked="onShowToAllUsersChange" />
 			</div>
 		</div>
-
+-->
 		<!-- Single shares -->
 		<TransitionGroup tag="ul">
 			<SharingShareDiv
